@@ -142,10 +142,10 @@ std::istream& operator>>(std::istream& input, Tentant& tentant) {
 		return input;
 	}
 
-	tentant.set_number(std::stoi(tokens[1]));
-	tentant.set_name(tokens[0]);
-	tentant.set_surface(std::stoi(tokens[1]));
-	tentant.set_type(tokens[2]);
+	tentant.set_number(std::stoi(tokens[0]));
+	tentant.set_name(tokens[1]);
+	tentant.set_surface(std::stoi(tokens[2]));
+	tentant.set_type(tokens[3]);
 
 	return input;
 }

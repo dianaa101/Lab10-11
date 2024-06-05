@@ -88,7 +88,7 @@ private:
 	void uiDelete();
 	void uiUpdate();
 	void uiFind();
-	void uiNotificareAdd();
+	// void uiNotificareAdd();
 	void uiFilterNumber();
 	void uiFilterType();
 	void sortName();

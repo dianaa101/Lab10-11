@@ -257,21 +257,33 @@ void AppGUI::clearNotificareTextBox() {
 	txtNotificareName->clear();
 }
 
+/*
 void AppGUI::uiNotificareAdd() {
-	int number = txtNotificareNumber->text().toInt();
+	string number = txtNotificareNumber->text().toStdString();
 	string name = txtNotificareName->text().toStdString();
 	QMessageBox msg;
 
-	auto found = srv.filter_number(number);
+	int correct_number;
+	try {
+		correct_number = std::stoi(number);
+	}
+	catch (std::invalid_argument& mesaj) {
+		msg.warning(this, "Warning", "Numarul trebuie sa fie corect");
+		return;
+	}
+
+	auto found = srv.filter_number(correct_number);
 	if (found.empty()) {
 		msg.warning(notificare, "Warning", "Tenant doesn't exist!");
 		clearNotificareTextBox();
 		return;
 	}
 
+
+
 	if (found.size() == 1) {
 		try {
-			srv.add_notificare_srv(number, found[0].get_name(), found);
+			srv.add_notificare_srv(correct_number, found[0].get_name(), found);
 		}
 		catch (NotificareException& mesaj) {
 			msg.warning(notificare, "Warning", QString::fromStdString(mesaj.get_mesaj()));
@@ -286,7 +298,7 @@ void AppGUI::uiNotificareAdd() {
 	else {
 		if (name != "") {
 			try {
-				srv.add_notificare_srv(number, name, found);
+				srv.add_notificare_srv(correct_number, name, found);
 			}
 			catch (NotificareException& mesaj) {
 				msg.warning(notificare, "Warning", QString::fromStdString(mesaj.get_mesaj()));
@@ -305,6 +317,7 @@ void AppGUI::uiNotificareAdd() {
 	clearNotificareTextBox();
 	load_list(srv.get_all_notifications());
 }
+*/ 
 
 void AppGUI::clearTextBox() {
 	txtNumber->clear();
@@ -324,7 +337,7 @@ void AppGUI::uiAdd() {
 
 	int correct_number;
 	try {
-		correct_number = stoi(number);
+		correct_number = std::stoi(number);
 	}
 	catch (std::invalid_argument& mesaj) {
 		msgBox.warning(this, "Warning", "Numarul trebuie sa fie corect");
@@ -333,7 +346,7 @@ void AppGUI::uiAdd() {
 
 	int correct_surface;
 	try {
-		correct_surface = stoi(surface);
+		correct_surface = std::stoi(surface);
 	}
 	catch (std::invalid_argument& mesaj) {
 		msgBox.warning(this, "Warning", "Surafata trebuie sa fie un numar corect");
@@ -356,14 +369,23 @@ void AppGUI::uiAdd() {
 }
 
 void AppGUI::uiDelete() {
-	int number = txtNumber->text().toInt();
+	string number = txtNumber->text().toStdString();
 	string name = txtName->text().toStdString();
 	QMessageBox msgBox;
 
 	qDebug() << number << name;
 
+	int correct_number;
 	try {
-		srv.delete_service(number, name);
+		correct_number = stoi(number);
+	}
+	catch (std::invalid_argument& mesaj) {
+		msgBox.warning(this, "Warning", "Numarul trebuie sa fie corect");
+		return;
+	}
+
+	try {
+		srv.delete_service(correct_number, name);
 	}
 	catch (RepoException& mesaj) {
 		msgBox.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
@@ -420,14 +442,23 @@ void AppGUI::uiUpdate() {
 }
 
 void AppGUI::uiFind() {
-	int number = txtNumber->text().toInt();
+	string number = txtNumber->text().toStdString();
 	string name = txtName->text().toStdString();
 	QMessageBox msgBox;
 
 	qDebug() << number << name;
 
+	int correct_number;
 	try {
-		Tentant tentant = srv.find_service(number, name);
+		correct_number = stoi(number);
+	}
+	catch (std::invalid_argument& mesaj) {
+		msgBox.warning(this, "Warning", "Numarul trebuie sa fie corect");
+		return;
+	}
+
+	try {
+		Tentant tentant = srv.find_service(correct_number, name);
 		qDebug() << tentant.to_string_print();
 
 		vector<Tentant> tentants;
@@ -467,9 +498,9 @@ void AppGUI::sortTypeSurface() {
 
 void AppGUI::uiFilterNumber() {
 	string number = txtfilter->text().toStdString();
-	int correct_number;
 	QMessageBox msgBox;
 
+	int correct_number;
 	try {
 		correct_number = stoi(number);
 	}
@@ -592,7 +623,7 @@ void AppGUI::connectSignals() {
 		load_list(srv.get_all_notifications());
 		});
 
-	QObject::connect(btn_add_notificare, &QPushButton::clicked, this, &AppGUI::uiNotificareAdd);
+	// QObject::connect(btn_add_notificare, &QPushButton::clicked, this, &AppGUI::uiNotificareAdd);
 	QObject::connect(btn_export_notificari, &QPushButton::clicked, [&]() {
 		string nume_fisier = txtNotificareFile->text().toStdString();
 		srv.export_notificare_srv(nume_fisier);
